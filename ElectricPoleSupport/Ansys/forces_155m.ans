@@ -1,0 +1,48 @@
+resume, pole_donut_155m, db
+/filename, pole_donut_155m
+
+/post1  
+set, last
+
+!
+! Get the sum of the forces on the bottom
+!
+nsel, s, loc, y, pole_ymin
+nplot   
+fsum   
+PRNLD, , ,ALL   
+!
+! Get the sum of the forces on the z- face
+!
+nsel, s, loc, y, donut_ymin, donut_ymax
+nsel, r, loc, z, donut_zmin, donut_zmin
+nplot   
+fsum
+PRNLD, , ,ALL   
+!
+! Get the sum of the forces on the z+ face
+!
+nsel, s, loc, y, donut_ymin, donut_ymax
+nsel, r, loc, z, donut_zmax, donut_zmax
+nplot   
+fsum
+PRNLD, , ,ALL   
+
+dd = 0.5*(donut_ymax - donut_ymin)
+nsel, s, loc, y, donut_ymin+dd, donut_ymax
+nsel, r, loc, z, donut_zmax, donut_zmax
+fsum
+nsel, s, loc, y, donut_ymin, donut_ymax-dd
+nsel, r, loc, z, donut_zmax, donut_zmax
+fsum
+!
+! Get the sum of the forces on the x+ face
+!
+!nsel, s, loc, y, donut_ymin, donut_ymax
+!nsel, r, loc, x, donut_xmax, 1.5*donut_xmax
+!nplot   
+!fsum
+!PRNLD, , ,ALL   
+allsel
+finish
+

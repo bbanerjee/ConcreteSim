@@ -1,0 +1,17 @@
+#/ansys_inc/v110/ansys/bin/ansys110 -b -p stba -j pole_donut_95m <  pole_donut_95m.ans > pole_donut_95m.out 2>& 1
+#/ansys_inc/v110/ansys/bin/ansys110 -b -p stba -j pole_donut_125m <  pole_donut_125m.ans > pole_donut_125m.out 2>& 1
+#/ansys_inc/v110/ansys/bin/ansys110 -b -p ane3fl -j pole_donut_155m <  pole_donut_155m.ans > pole_donut_155m.out 2>& 1
+#/ansys_inc/v110/ansys/bin/ansys110 -b -p stba -j forces_95m <  forces_95m.ans > forces_95m.out 2>& 1
+#/ansys_inc/v110/ansys/bin/ansys110 -b -p stba -j forces_125m <  forces_125m.ans > forces_125m.out 2>& 1
+#/ansys_inc/v110/ansys/bin/ansys110 -b -p stba -j forces_155m <  forces_155m.ans > forces_155m.out 2>& 1
+#/ansys_inc/v110/ansys/bin/ansys110 -b -p stba -j pole_donut_95m_a <  pole_donut_95m_a.ans > pole_donut_95m_a.out 2>& 1
+#/ansys_inc/v110/ansys/bin/ansys110 -b -p stba -j pole_donut_125m_a <  pole_donut_125m_a.ans > pole_donut_125m_a.out 2>& 1
+#/ansys_inc/v110/ansys/bin/ansys110 -b -p stba -j pole_donut_155m_a <  pole_donut_155m_a.ans > pole_donut_155m_a.out 2>& 1
+#/ansys_inc/v110/ansys/bin/ansys110 -b -p stba -j pole_donut_95m_b <  pole_donut_95m_b.ans > pole_donut_95m_b.out 2>& 1
+#/ansys_inc/v110/ansys/bin/ansys110 -b -p stba -j pole_donut_125m_b <  pole_donut_125m_b.ans > pole_donut_125m_b.out 2>& 1
+#/ansys_inc/v110/ansys/bin/ansys110 -b -p stba -j pole_donut_155m_b <  pole_donut_155m_b.ans > pole_donut_155m_b.out 2>& 1
+#/ansys_inc/v110/ansys/bin/ansys110 -b -p stba -j pole_slot_95m <  pole_slot_95m.ans > pole_slot_95m.out 2>& 1
+#/ansys_inc/v110/ansys/bin/ansys110 -b -p stba -j pole_slot_125m <  pole_slot_125m.ans > pole_slot_125m.out 2>& 1
+#/ansys_inc/v110/ansys/bin/ansys110 -b -p stba -j pole_slot_155m <  pole_slot_155m.ans > pole_slot_155m.out 2>& 1
+#/ansys_inc/v110/ansys/bin/ansys110 -b -p stba -j pole_slot_95m_a <  pole_slot_95m_a.ans > pole_slot_95m_a.out 2>& 1
+/ansys_inc/v110/ansys/bin/ansys110 -b -p stba -j pole_slot_125m_a <  pole_slot_125m_a.ans > pole_slot_125m_a.out 2>& 1

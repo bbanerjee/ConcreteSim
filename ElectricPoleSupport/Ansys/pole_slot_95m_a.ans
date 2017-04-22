@@ -1,0 +1,288 @@
+/title, Slot test
+/filname, pole_slot_95m_a
+
+/prep7 
+!
+! Element Parameters
+!
+mat_conc = 1
+E_conc = 30.0e9
+nu_conc = 0.20
+rho_conc = 2400
+!
+mat_rebar = 2
+E_rebar = 200.0e9
+nu_rebar = 0.33
+rho_rebar = 7850
+vf_rebar = 0.03
+theta_rebar = 90
+phi_rebar = 0
+vf_rebar1 = 0.005
+theta_rebar1 = 90
+phi_rebar1 = 90
+!
+mat_poly = 3
+E_poly = 0.20e9
+nu_poly = 0.46
+rho_poly = 938
+fric_poly = 0.1
+sigy_poly = 1.8e7
+hard_poly = 1.2e6
+!
+el_size = 0.011875
+!el_size1 = 0.035
+!el_num = 8
+el_size1 = 0.025
+el_num = 10
+!
+type_conc = 1
+real_conc = 1
+type_poly = 2
+real_poly = 2
+type_plane = 3
+real_plane = 3
+!
+! Geometry parameters
+!
+pole_bot_wid = 0.15/2
+pole_top_wid = 0.150/2
+pole_thick = 0.15
+pole_gl = 1.55
+pole_gl_len = 1.4
+pole_gl_wid = 0.35/2
+pole_len = 9.5 
+pole_xmin = 0
+pole_x_bot = pole_bot_wid
+pole_x_mid = pole_gl_wid
+pole_x_top = pole_top_wid
+pole_ymin = -pole_gl
+pole_y_mid_a = -(pole_gl-pole_gl_len)
+pole_y_mid_b = 0
+pole_y_top = pole_len-pole_gl
+pole_zmin = 0
+pole_zmax = pole_thick
+
+donut_ymin = pole_ymin
+donut_ymax = donut_ymin + 0.20
+donut_zmin = pole_zmin
+donut_zmax = pole_zmax
+donut_xmin = 0
+donut_xmax = pole_x_bot
+
+breast_wid = 0.35
+breast_len = 0.90/2
+breast_thick = 0.095
+breast_xmin = 0
+breast_xmax = breast_len
+breast_ymax = -(pole_gl - pole_gl_len)
+breast_ymin = breast_ymax - breast_wid
+breast_zmin = pole_thick
+breast_zmax = breast_zmin + breast_thick
+!
+! Element type
+!
+et, type_conc, solid65   ! Concrete slab
+et, type_poly, solid45   ! Polyethylene blocks
+et, type_plane, plane42  ! Needed for sweeping
+!
+! Materials
+!
+! Concrete pole
+mat, mat_conc
+mp, ex, mat_conc, E_conc
+mp, nuxy, mat_conc, nu_conc
+mp, dens, mat_conc, rho_conc
+!
+! Steel rebar
+!
+mat, mat_rebar
+mp, ex, mat_rebar, E_rebar
+mp, nuxy, mat_rebar, nu_rebar
+mp, dens, mat_rebar, rho_rebar
+!
+! Polyethylene blocks
+!
+mat, mat_poly
+mp, ex, mat_poly, E_poly
+mp, nuxy, mat_poly, nu_poly
+mp, dens, mat_poly, rho_poly
+mp, mu, mat_poly, fric_poly     ! Coeff of friction
+mp, emis, mat_poly, 7.88860905221e-031 ! Emissisvity ?
+!tb, bkin, mat_poly
+!tbdata, 1, sigy_poly, hard_poly
+!
+! Real constants reinforced concrete (1% rebar)
+!
+type, type_conc
+r, real_conc, mat_rebar, vf_rebar, theta_rebar, phi_rebar, mat_rebar, vf_rebar1, theta_rebar1, phi_rebar1
+!
+! Real constants for poly blocks
+!
+r, real_poly
+r, real_plane
+
+!==================================================
+! Create geometry
+!
+k,1, pole_xmin,  pole_ymin, 0.0   
+k,2, pole_x_bot, pole_ymin, 0.0
+k,3, pole_x_mid, pole_y_mid_a, 0.0
+k,4, pole_x_mid, pole_y_mid_b, 0.0
+k,5, pole_x_top, pole_y_top, 0.0  
+k,6, pole_xmin,  pole_y_top, 0.0
+k,7, pole_xmin,  pole_y_mid_b, 0.0
+k,8, pole_xmin,  pole_y_mid_a, 0.0  
+l,1,2   
+l,2,3   
+l,3,4 
+l,4,7
+l,7,8
+l,8,1  
+l,4,5   
+l,5,6 
+l,6,7    
+al,1,2,3,4,5,6 
+al,7,8,9,4  
+!
+! Mesh the areas
+!
+!
+! Base area
+!
+esize, el_size1
+asel, s, area,,1
+aatt, mat_conc, real_plane, type_plane, 0
+mshkey, 0
+amesh, 1
+allsel
+!
+! Area above ground
+asel, s, area,,2
+aatt, mat_conc, real_plane, type_plane, 0
+mshkey, 1
+amesh,2
+allsel
+!
+! Clean up
+!
+nummrg, kp
+nummrg, node
+!
+! Sweep concrete pole
+!
+type, type_conc
+real, real_conc
+mat, mat_conc
+esize, 0, el_num
+voffst,1, pole_thick, , 
+voffst,2, pole_thick, ,
+aclear, 1         ! remove the plane42 elements used for sweeping
+aclear, 2        
+!
+! Clean up
+!
+nummrg,kp
+nummrg,node
+nummrg, kp
+nummrg, node
+allsel
+!
+! Relect volumes
+!
+vsymm, x, all, , , ,0, 0
+nummrg, kp
+nummrg, node
+allsel
+
+!=====================================
+! Apply displacements
+!
+! Symmetry along z = 0
+!
+seltol, 1.0e-6
+nsel, s, loc, z, 0.0
+d, all, uz, 0
+!
+! Fix bottom of pole
+!
+nsel, s, loc, y, pole_ymin
+d, all, uy, 0 
+allsel
+
+
+!=====================================
+! Apply loads
+!
+!
+! Apply gravity loads
+!
+acel, 0, 9.8, 0 
+!
+! Apply displacement loads
+!
+nsel, s, loc, y, pole_y_top  
+nsel, r, loc, x, pole_x_top
+d, all, ux, 0.5
+allsel
+
+!
+! Apply soil pressure
+!
+nu_soil = 0.3 
+rho_soil = 1500 
+g_soil = 9.8 
+pres_soil = nu_soil*rho_soil*g_soil 
+sfgrad, pres, , y, 0, pres_soil
+asel, s, loc, x, donut_xmax, 10.0*donut_xmax
+asel, u, loc, z, 0
+asel, u, loc, z, donut_zmin
+nsla, s
+nsel, r, loc, y, donut_ymax, 0
+sf, all, pres, 0
+
+!
+! Fix breast block region
+!
+!nsla, s
+!nsel, r, loc, y, breast_ymin, breast_ymax
+!d, all, ux, 0
+
+!
+!  Fix donut region
+!
+asel, s, loc, x, donut_xmax, 10.0*donut_xmax
+asel, u, loc, z, 0
+asel, u, loc, z, donut_zmin
+nsla, s
+nsel, r, loc, y, donut_ymin, donut_ymax
+d, all, ux, 0
+
+!nsel, s, loc, y, donut_ymin, donut_ymax
+!nsel, r, loc, z, donut_zmax, donut_zmax
+!d, all, uz, 0
+
+!nsel, s, loc, y, donut_ymin, donut_ymax
+!nsel, r, loc, x, donut_xmax, 1.5*donut_xmax
+!d, all, ux, 0
+allsel
+
+save
+finish
+
+!============================================
+! Solve
+!
+/solu
+!
+! Solve options
+!
+antype, 0
+nlgeom, 1
+time, 0
+autots, on
+solcon, on
+deltim, 0.01
+nsubst, 100
+solve
+finish
+

@@ -1,0 +1,569 @@
+
+ ANSYS Structural Batch                            
+
+
+ *-------------------------------------------------------------*
+ |                                                             |
+ |   W E L C O M E   T O   T H E   A N S Y S   P R O G R A M   |
+ |                                                             |
+ *-------------------------------------------------------------*
+
+
+
+
+ ***************************************************************
+ *                   ANSYS 11.0 LEGAL NOTICES                  *
+ ***************************************************************
+ *                                                             *
+ * COPYRIGHT AND TRADEMARK INFORMATION                         *
+ *                                                             *
+ * Copyright 2007 SAS IP, Inc.  All rights reserved.           *
+ * Unauthorized use, distribution or duplication is prohibited.*
+ *                                                             *
+ * See the ANSYS, Inc. online documentation or the ANSYS, Inc. *
+ * documentation CD for the complete Legal Notice.             *
+ *                                                             *
+ ***************************************************************
+ *                                                             *
+ * DISCLAIMER NOTICE                                           *
+ *                                                             *
+ * THIS ANSYS SOFTWARE PRODUCT AND PROGRAM DOCUMENTATION       *
+ * INCLUDE TRADE SECRETS AND ARE CONFIDENTIAL AND PROPRIETARY  *
+ * PRODUCTS OF ANSYS, INC., ITS SUBSIDIARIES, OR LICENSORS.    *
+ * The software products and documentation are furnished by    *
+ * ANSYS, Inc., its subsidiaries, or affiliates under a        *
+ * software license agreement that contains provisions         *
+ * concerning non-disclosure, copying, length and nature of    *
+ * use, compliance with exporting laws, warranties,            *
+ * disclaimers, limitations of liability, and remedies, and    *
+ * other provisions.  The software products and documentation  *
+ * may be used, disclosed, transferred, or copied only in      *
+ * accordance with the terms and conditions of that software   *
+ * license agreement.                                          *
+ *                                                             *
+ * ANSYS, Inc. and ANSYS Europe, Ltd. are UL registered        *
+ * ISO 9001:2000 Companies.                                    *
+ *                                                             *
+ ***************************************************************
+ *                                                             *
+ * U.S. GOVERNMENT RIGHTS                                      *
+ *                                                             *
+ * For U.S. Government users, except as specifically granted   *
+ * by the ANSYS, Inc. software license agreement, the use,     *
+ * duplication, or disclosure by the United States Government  *
+ * is subject to restrictions stated in the ANSYS, Inc.        *
+ * software license agreement and FAR 12.212 (for non-DOD      *
+ * licenses).                                                  *
+ *                                                             *
+ ***************************************************************
+
+
+ AFTER YOU HAVE READ, UNDERSTOOD, AND AGREED TO THE PREVIOUS NOTICES,
+ PRESS <CR> OR <ENTER> TO CONTINUE
+
+
+          *****  ANSYS COMMAND LINE ARGUMENTS  *****
+  INITIAL JOBNAME              = forces_125m                                                                                                                                                                                                                                             
+  BATCH MODE REQUESTED         = LIST  
+
+ 00420358          VERSION=LINUX EM64T     RELEASE= 11.0     UP20070125
+ CURRENT JOBNAME=forces_125m  21:03:47  JUN 10, 2009 CP=      0.640
+
+     1  resume, pole_donut_125m, db 
+     2  /filename, pole_donut_125m  
+     3      
+     4  /post1  
+     5  set, last   
+     6      
+     7  !   
+     8  ! Get the sum of the forces on the bottom   
+     9  !   
+    10  nsel, s, loc, y, pole_ymin  
+    11  nplot   
+    12  fsum
+    13  PRNLD, , ,ALL   
+    14  !   
+    15  ! Get the sum of the forces on the z- face  
+    16  !   
+    17  nsel, s, loc, y, donut_ymin, donut_ymax 
+    18  nsel, r, loc, z, donut_zmin, donut_zmin 
+    19  nplot   
+    20  fsum
+    21  PRNLD, , ,ALL   
+    22  !   
+    23  ! Get the sum of the forces on the z+ face  
+    24  !   
+    25  nsel, s, loc, y, donut_ymin, donut_ymax 
+    26  nsel, r, loc, z, donut_zmax, donut_zmax 
+    27  nplot   
+    28  fsum
+    29  PRNLD, , ,ALL   
+    30      
+    31  dd = 0.5*(donut_ymax - donut_ymin)  
+    32  nsel, s, loc, y, donut_ymin+dd, donut_ymax  
+    33  nsel, r, loc, z, donut_zmax, donut_zmax 
+    34  fsum
+    35  nsel, s, loc, y, donut_ymin, donut_ymax-dd  
+    36  nsel, r, loc, z, donut_zmax, donut_zmax 
+    37  fsum
+    38  !   
+    39  ! Get the sum of the forces on the x+ face  
+    40  !   
+    41  !nsel, s, loc, y, donut_ymin, donut_ymax
+    42  !nsel, r, loc, x, donut_xmax, 1.5*donut_xmax
+    43  !nplot  
+    44  !fsum   
+    45  !PRNLD, , ,ALL  
+    46      
+    47  allsel  
+    48  finish  
+    49      
+
+ RUN SETUP PROCEDURE FROM FILE= /usr/ansys_inc/v110/ansys/apdl/start110.ans
+
+ /INPUT FILE= /usr/ansys_inc/v110/ansys/apdl/start110.ans  LINE=       0
+
+ RESUME ANSYS DATA FROM FILE NAME=pole_donut_125m.db                                                                                                                                                                                                                                                  
+
+ *** ANSYS GLOBAL STATUS *** 
+
+ TITLE =  Donut test                                                  
+ ANALYSIS TYPE =  STATIC (STEADY-STATE)
+ NUMBER OF ELEMENT TYPES =      3
+   46710 ELEMENTS CURRENTLY SELECTED.  MAX ELEMENT NUMBER =    51381
+   56980 NODES CURRENTLY SELECTED.     MAX NODE NUMBER =       57090
+      16 KEYPOINTS CURRENTLY SELECTED. MAX KEYPOINT NUMBER =      17
+      26 LINES CURRENTLY SELECTED.     MAX LINE NUMBER =          28
+      13 AREAS CURRENTLY SELECTED.     MAX AREA NUMBER =          13
+       2 VOLUMES CURRENTLY SELECTED.   MAX VOL. NUMBER =           2
+ MAXIMUM LINEAR PROPERTY NUMBER        =       3
+ MAXIMUM REAL CONSTANT SET NUMBER      =       3
+ ACTIVE COORDINATE SYSTEM              =       0  (CARTESIAN)  
+ NUMBER OF SPECIFIED CONSTRAINTS       =    5775
+ NUMBER OF SPECIFIED SURFACE LOADS     =     292
+
+ INITIAL JOBNAME = forces_125m
+ CURRENT JOBNAME = forces_125m
+
+ CURRENT JOBNAME REDEFINED AS pole_donut_125m
+1
+
+ ***** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE 11.0     *****
+ ANSYS Structural Batch                            
+ 00420358          VERSION=LINUX EM64T   21:03:48  JUN 10, 2009 CP=      0.850
+
+  Donut test                                                          
+
+
+          ***** ANSYS RESULTS INTERPRETATION (POST1) *****
+
+ *** NOTE ***                            CP =       0.850   TIME= 21:03:48
+ Reading results into the database (SET command) will update the current 
+ displacement and force boundary conditions in the database with the     
+ values from the results file for that load set.  Note that any          
+ subsequent solutions will use these values unless action is taken to    
+ either SAVE the current values or not overwrite them (/EXIT,NOSAVE).    
+
+
+ USE LAST SUBSTEP ON RESULT FILE  FOR LOAD CASE 0 
+
+ SET COMMAND GOT LOAD STEP=     1  SUBSTEP=    15  CUMULATIVE ITERATION=    43
+   TIME/FREQUENCY=  1.0000    
+ TITLE=  Donut test                                                    
+
+ SELECT       FOR ITEM=LOC  COMPONENT=Y     BETWEEN -2.1000     AND  -2.1000    
+   KABS=  0.  TOLERANCE= 0.105000E-01
+
+       44  NODES (OF    56980  DEFINED) SELECTED BY  NSEL  COMMAND.
+
+ *** NOTE *** Display device has not yet been specified with the /SHOW command.  Display commands ignored. 
+
+ *** NOTE ***                            CP =       1.950   TIME= 21:03:49
+ Summations based on final geometry and will not agree with solution     
+ reactions.                                                              
+
+ ***** SUMMATION OF TOTAL    FORCES AND MOMENTS IN THE GLOBAL COORDINATE SYSTEM *****
+  FX  =  -60.35860    
+  FY  =  -7599.189    
+  FZ  = -0.2220446E-15
+  MX  =   575.1595    
+  MY  =  -4.520524    
+  MZ  =  -424.0810    
+
+ SUMMATION POINT=  0.0000      0.0000      0.0000    
+
+ PRINT SUMMED NODAL LOADS
+1
+
+ ***** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE 11.0     *****
+ ANSYS Structural Batch                            
+ 00420358          VERSION=LINUX EM64T   21:03:49  JUN 10, 2009 CP=      2.180
+
+  Donut test                                                          
+
+ 
+  ***** POST1 SUMMED TOTAL NODAL LOADS LISTING *****                           
+ 
+  LOAD STEP=     1  SUBSTEP=    15                                             
+   TIME=    1.0000      LOAD CASE=   0                                         
+ 
+  THE FOLLOWING X,Y,Z SOLUTIONS ARE IN THE GLOBAL COORDINATE SYSTEM            
+ 
+    NODE      FX          FY          FZ    
+       1  -3.2579     -57.177    -0.12878E-19
+       2              -70.375     0.12287E-19
+       3              -115.64    
+       4              -122.47    
+    5181  -3.1520     -60.037    
+    5182  -6.2587     -115.18    
+    5183  -5.9967     -116.96    
+    5184  -5.8633     -117.77    
+    5185  -5.8424     -118.47    
+    5186  -5.8728     -119.18    
+    5187  -5.9188     -119.84    
+    5188  -5.9741     -120.36    
+    5189  -6.0567     -120.61    
+    5190  -6.1651     -120.45    
+    5191              -73.889    
+    5192              -142.59    
+    5193              -144.11    
+    5194              -145.35    
+    5195              -146.39    
+    5196              -147.38    
+    5197              -148.32    
+    5198              -149.08    
+    5199              -149.50    
+    5200              -149.12    
+    5241              -121.37    
+    5242              -128.60    
+    5243              -232.99    
+    5244              -236.40    -0.20817E-16
+    5245              -238.18    -0.34694E-17
+    5246              -239.67    -0.27756E-16
+    5247              -241.15    
+    5248              -242.52    
+    5249              -243.60     0.11102E-15
+    5250              -244.10    -0.22204E-15
+    5251              -243.67    
+    5252              -247.72     0.27756E-16
+    5253              -250.60    -0.41633E-16
+1
+
+ ***** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE 11.0     *****
+ ANSYS Structural Batch                            
+ 00420358          VERSION=LINUX EM64T   21:03:49  JUN 10, 2009 CP=      2.180
+
+  Donut test                                                          
+
+ 
+  ***** POST1 SUMMED TOTAL NODAL LOADS LISTING *****                           
+ 
+  LOAD STEP=     1  SUBSTEP=    15                                             
+   TIME=    1.0000      LOAD CASE=   0                                         
+ 
+  THE FOLLOWING X,Y,Z SOLUTIONS ARE IN THE GLOBAL COORDINATE SYSTEM            
+ 
+    NODE      FX          FY          FZ    
+    5254              -252.72    -0.83267E-16
+    5255              -254.47    -0.20817E-16
+    5256              -256.14    
+    5257              -257.70    
+    5258              -258.94    
+    5259              -259.54    
+    5260              -258.84     0.22204E-15
+
+ TOTAL VALUES
+ VALUE   -60.359     -7599.2    -0.58981E-16
+
+ SELECT       FOR ITEM=LOC  COMPONENT=Y     BETWEEN -2.0500     AND  -1.8300    
+   KABS=  0.  TOLERANCE= 0.220000E-08
+
+      374  NODES (OF    56980  DEFINED) SELECTED BY  NSEL  COMMAND.
+
+ RESELECT     FOR ITEM=LOC  COMPONENT=Z     BETWEEN  0.0000     AND   0.0000    
+   KABS=  0.  TOLERANCE= 0.100000E-05
+
+       34  NODES (OF    56980  DEFINED) SELECTED BY  NSEL  COMMAND.
+
+ *** NOTE ***                            CP =       2.390   TIME= 21:03:49
+ Summations based on final geometry and will not agree with solution     
+ reactions.                                                              
+
+ ***** SUMMATION OF TOTAL    FORCES AND MOMENTS IN THE GLOBAL COORDINATE SYSTEM *****
+  FX  =   2.457367    
+  FY  = -0.9237056E-13
+  FZ  =   561.5743    
+  MX  =  -1031.922    
+  MY  =  -25.72386    
+  MZ  =   2.834842    
+
+ SUMMATION POINT=  0.0000      0.0000      0.0000    
+
+ PRINT SUMMED NODAL LOADS
+1
+
+ ***** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE 11.0     *****
+ ANSYS Structural Batch                            
+ 00420358          VERSION=LINUX EM64T   21:03:49  JUN 10, 2009 CP=      2.610
+
+  Donut test                                                          
+
+ 
+  ***** POST1 SUMMED TOTAL NODAL LOADS LISTING *****                           
+ 
+  LOAD STEP=     1  SUBSTEP=    15                                             
+   TIME=    1.0000      LOAD CASE=   0                                         
+ 
+  THE FOLLOWING X,Y,Z SOLUTIONS ARE IN THE GLOBAL COORDINATE SYSTEM            
+ 
+    NODE      FX          FY          FZ    
+       8              0.71054E-14 -6.8674    
+       9                          -4.4861    
+      10                          -3.5074    
+      11                          -2.3166    
+      12             -0.71054E-14 0.41096    
+      13             -0.71054E-14  6.0988    
+      14                           21.183    
+      15              0.71054E-14  61.667    
+     173   7.9214     0.71054E-14  74.138    
+     174   4.1786    -0.71054E-14  30.501    
+     175  0.91098                  12.157    
+     176 -0.55183E-01              4.3831    
+     177 -0.40899    -0.71054E-14 0.26940    
+     178 -0.72733                 -1.8892    
+     179  -1.4524                 -3.1752    
+     180  -2.9768                 -4.6264    
+     181  -4.9329     0.71054E-14 -7.2783    
+     376             -0.14211E-13 -12.166    
+     377                          -8.0572    
+     378              0.71054E-14 -5.5620    
+     379             -0.71054E-14 -2.1693    
+     380                           4.7964    
+     381              0.71054E-14  18.662    
+     382             -0.71054E-14  53.141    
+     383              0.71054E-14  137.12    
+     534              0.71054E-14  145.58    
+     535             -0.71054E-14  59.203    
+     536                           23.179    
+     537                           7.9069    
+     538                         -0.88980E-01
+     539             -0.71054E-14 -4.2152    
+     540              0.71054E-14 -6.8708    
+     541             -0.71054E-14 -10.891    
+     542              0.71054E-14 -14.653    
+1
+
+ ***** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE 11.0     *****
+ ANSYS Structural Batch                            
+ 00420358          VERSION=LINUX EM64T   21:03:49  JUN 10, 2009 CP=      2.610
+
+  Donut test                                                          
+
+ 
+  ***** POST1 SUMMED TOTAL NODAL LOADS LISTING *****                           
+ 
+  LOAD STEP=     1  SUBSTEP=    15                                             
+   TIME=    1.0000      LOAD CASE=   0                                         
+ 
+  THE FOLLOWING X,Y,Z SOLUTIONS ARE IN THE GLOBAL COORDINATE SYSTEM            
+ 
+    NODE      FX          FY          FZ    
+
+ TOTAL VALUES
+ VALUE    2.4574    -0.71054E-14  561.57    
+
+ SELECT       FOR ITEM=LOC  COMPONENT=Y     BETWEEN -2.0500     AND  -1.8300    
+   KABS=  0.  TOLERANCE= 0.220000E-08
+
+      374  NODES (OF    56980  DEFINED) SELECTED BY  NSEL  COMMAND.
+
+ RESELECT     FOR ITEM=LOC  COMPONENT=Z     BETWEEN 0.15000     AND  0.15000    
+   KABS=  0.  TOLERANCE= 0.750000E-03
+
+       34  NODES (OF    56980  DEFINED) SELECTED BY  NSEL  COMMAND.
+
+ *** NOTE ***                            CP =       2.810   TIME= 21:03:50
+ Summations based on final geometry and will not agree with solution     
+ reactions.                                                              
+
+ ***** SUMMATION OF TOTAL    FORCES AND MOMENTS IN THE GLOBAL COORDINATE SYSTEM *****
+  FX  =  -9.829571    
+  FY  =  0.2842171E-13
+  FZ  =  0.1110223E-14
+  MX  =  0.2885713E-14
+  MY  =  -1.474441    
+  MZ  =  -19.51293    
+
+ SUMMATION POINT=  0.0000      0.0000      0.0000    
+
+ PRINT SUMMED NODAL LOADS
+1
+
+ ***** ANSYS - ENGINEERING ANALYSIS SYSTEM  RELEASE 11.0     *****
+ ANSYS Structural Batch                            
+ 00420358          VERSION=LINUX EM64T   21:03:50  JUN 10, 2009 CP=      3.040
+
+  Donut test                                                          
+
+ 
+  ***** POST1 SUMMED TOTAL NODAL LOADS LISTING *****                           
+ 
+  LOAD STEP=     1  SUBSTEP=    15                                             
+   TIME=    1.0000      LOAD CASE=   0                                         
+ 
+  THE FOLLOWING X,Y,Z SOLUTIONS ARE IN THE GLOBAL COORDINATE SYSTEM            
+ 
+    NODE      FX          FY          FZ    
+    5263              0.14211E-13
+    5264             -0.14211E-13
+    5265             -0.14211E-13
+    5266              0.14211E-13
+    5267             -0.14211E-13-0.11102E-15
+    5270             -0.14211E-13
+    6316  -1.0565    
+    6317 -0.92601    
+    6318 -0.67893    
+    6319 -0.36668    
+    6320 -0.15310    
+    6321 -0.20875    -0.14211E-13
+    6322 -0.73488    
+    6323  -1.9588    
+    6324  -3.7460     0.71054E-14
+    7195             -0.14211E-13
+    7196              0.28422E-13
+    7197              0.14211E-13
+    7198             -0.28422E-13
+    7199              0.14211E-13
+    7200             -0.42633E-13
+    7201                          0.22204E-15
+    7352              0.14211E-13 0.22204E-15
+    7354              0.14211E-13-0.22204E-15
+    7355              0.14211E-13
+    7356              0.14211E-13-0.22204E-15
+    7357                         -0.22204E-15
+    7358              0.28422E-13
+    7360              0.14211E-13 0.22204E-15
+
+ TOTAL VALUES
+ VALUE   -9.8296     0.35527E-13-0.11102E-15
+
+ PARAMETER DD =    0.1100000000    
+
+ SELECT       FOR ITEM=LOC  COMPONENT=Y     BETWEEN -1.9400     AND  -1.8300    
+   KABS=  0.  TOLERANCE= 0.110000E-08
+
+      176  NODES (OF    56980  DEFINED) SELECTED BY  NSEL  COMMAND.
+
+ RESELECT     FOR ITEM=LOC  COMPONENT=Z     BETWEEN 0.15000     AND  0.15000    
+   KABS=  0.  TOLERANCE= 0.750000E-03
+
+       16  NODES (OF    56980  DEFINED) SELECTED BY  NSEL  COMMAND.
+
+ *** NOTE ***                            CP =       3.250   TIME= 21:03:50
+ Summations based on final geometry and will not agree with solution     
+ reactions.                                                              
+
+ ***** SUMMATION OF TOTAL    FORCES AND MOMENTS IN THE GLOBAL COORDINATE SYSTEM *****
+  FX  =  -3.028075    
+  FY  = -0.8526513E-13
+  FZ  =  0.2220446E-15
+  MX  =  0.9991140E-14
+  MY  = -0.4542134    
+  MZ  =  -5.686550    
+
+ SUMMATION POINT=  0.0000      0.0000      0.0000    
+
+ SELECT       FOR ITEM=LOC  COMPONENT=Y     BETWEEN -2.0500     AND  -1.9400    
+   KABS=  0.  TOLERANCE= 0.110000E-08
+
+      198  NODES (OF    56980  DEFINED) SELECTED BY  NSEL  COMMAND.
+
+ RESELECT     FOR ITEM=LOC  COMPONENT=Z     BETWEEN 0.15000     AND  0.15000    
+   KABS=  0.  TOLERANCE= 0.750000E-03
+
+       18  NODES (OF    56980  DEFINED) SELECTED BY  NSEL  COMMAND.
+
+ *** NOTE ***                            CP =       3.460   TIME= 21:03:50
+ Summations based on final geometry and will not agree with solution     
+ reactions.                                                              
+
+ ***** SUMMATION OF TOTAL    FORCES AND MOMENTS IN THE GLOBAL COORDINATE SYSTEM *****
+  FX  =  -6.801495    
+  FY  =  0.7105427E-13
+  FZ  = -0.1110223E-14
+  MX  =  0.4290839E-14
+  MY  =  -1.020228    
+  MZ  =  -13.82638    
+
+ SUMMATION POINT=  0.0000      0.0000      0.0000    
+
+ SELECT ALL ENTITIES OF TYPE= ALL  AND BELOW
+
+ ALL SELECT   FOR ITEM=VOLU COMPONENT=    
+  IN RANGE       1 TO        2 STEP        1
+
+        2  VOLUMES (OF        2  DEFINED) SELECTED BY  VSEL  COMMAND.
+
+ ALL SELECT   FOR ITEM=AREA COMPONENT=    
+  IN RANGE       1 TO       13 STEP        1
+
+       13  AREAS (OF       13  DEFINED) SELECTED BY ASEL COMMAND.
+
+ ALL SELECT   FOR ITEM=LINE COMPONENT=    
+  IN RANGE       1 TO       28 STEP        1
+
+       26  LINES (OF       26  DEFINED) SELECTED BY LSEL COMMAND.
+
+ ALL SELECT   FOR ITEM=KP   COMPONENT=    
+  IN RANGE       1 TO       17 STEP        1
+
+       16  KEYPOINTS (OF       16  DEFINED) SELECTED BY  KSEL  COMMAND.
+
+ ALL SELECT   FOR ITEM=ELEM COMPONENT=    
+  IN RANGE       1 TO    51381 STEP        1
+
+    46710  ELEMENTS (OF    46710  DEFINED) SELECTED BY  ESEL  COMMAND.
+
+ ALL SELECT   FOR ITEM=NODE COMPONENT=    
+  IN RANGE       1 TO    57090 STEP        1
+
+    56980  NODES (OF    56980  DEFINED) SELECTED BY NSEL  COMMAND.
+
+ EXIT THE ANSYS POST1 DATABASE PROCESSOR
+
+
+ ***** ROUTINE COMPLETED *****  CP =         3.460
+
+
+
+ ***** END OF INPUT ENCOUNTERED *****
+
+ PURGE ALL SOLUTION AND POST DATA
+ SAVE ALL MODEL DATA
+
+ ALL CURRENT ANSYS DATA WRITTEN TO FILE NAME= pole_donut_125m.db
+  FOR POSSIBLE RESUME FROM THIS POINT
+
+
+ NUMBER OF WARNING MESSAGES ENCOUNTERED=          0
+ NUMBER OF ERROR   MESSAGES ENCOUNTERED=          0
+
+
+ *---------------------------------------------------------------------------*
+ |                                                                           |
+ |                            ANSYS RUN COMPLETED                            |
+ |                                                                           |
+ |---------------------------------------------------------------------------|
+ |                                                                           |
+ |            Release 11.0           UP20070125         LINUX EM64T          |
+ |                                                                           |
+ |---------------------------------------------------------------------------|
+ |                                                                           |
+ |   Maximum Scratch Memory Used       =     3104204 Words       11.842 MB   |
+ |                                                                           |
+ |---------------------------------------------------------------------------|
+ |                                                                           |
+ |        CP Time      (sec) =          3.730       Time  =  21:03:51        |
+ |        Elapsed Time (sec) =          5.000       Date  =  06/10/2009      |
+ |                                                                           |
+ *---------------------------------------------------------------------------*
