@@ -1,0 +1,609 @@
+/CWD,'/home/banerjee/Work/ElectricPole/SmartStart/Ansys'
+/FILNAME,heelBlkSoil,0
+/prep7
+!
+! Material parameters
+!
+mat_poly = 1
+E_poly = 0.59e9
+nu_poly = 0.46
+rho_poly = 938
+fric_poly = 0.1
+sigy_poly = 1.8e7
+hard_poly = 1.2e6
+type_poly = 1
+real_poly = 1
+!
+mat_soil = 3
+E_soil = 2.0e6
+nu_soil = 0.40
+rho_soil = 1700
+fric_soil = 0.1
+coh_soil = 20.0e3
+int_fric_soil = 20
+type_soil = 3
+real_soil = 3
+!
+mat_target = mat_soil
+type_target = 5
+real_target = 5
+mat_contact = mat_poly
+type_contact = 6
+real_contact = 6
+!
+! Element type
+!
+et, type_poly, solid186   ! Polyethylene blocks
+keyopt, type_poly, 2, 0   ! Uniform reduced integration
+keyopt, type_poly, 3, 0   ! Structural solid
+keyopt, type_poly, 6, 0   ! Pure displacement formulation
+keyopt, type_poly, 10, 0  ! No initial stress
+!
+et, type_soil, solid186   ! Polyethylene blocks
+keyopt, type_soil, 2, 0   ! Uniform reduced integration
+keyopt, type_soil, 3, 0   ! Structural solid
+keyopt, type_soil, 6, 0   ! Pure displacement formulation
+keyopt, type_soil, 10, 0  ! No initial stress
+!
+et, type_target, targe170  ! Surface-to-surface target element
+keyopt, type_target, 5, 0
+!
+et, type_contact, conta174  ! Surface-to-surface contact element
+keyopt, type_contact, 2, 0
+keyopt, type_contact, 4, 0
+keyopt, type_contact, 5, 0
+keyopt, type_contact, 7, 0
+keyopt, type_contact, 8, 0
+keyopt, type_contact, 9, 0
+keyopt, type_contact, 10, 2   
+keyopt, type_contact, 11, 0   
+keyopt, type_contact, 12, 0   
+!
+! Material
+!
+mat, mat_poly
+mp, ex, mat_poly, E_poly
+mp, nuxy, mat_poly, nu_poly
+mp, dens, mat_poly, rho_poly
+mp, mu, mat_poly, fric_poly     ! Coeff of friction
+mp, emis, mat_poly, 7.88860905221e-031 ! Emissisvity ?
+tb, bkin, mat_poly
+tbdata, 1, sigy_poly, hard_poly
+!
+! Real constants for poly blocks
+!
+r, real_poly
+!
+! Soil
+!
+mat, mat_soil
+mp, ex, mat_soil, E_soil
+mp, nuxy, mat_soil, nu_soil
+mp, dens, mat_soil, rho_soil
+mp, mu, mat_soil, fric_soil     ! Coeff of friction
+tb, dp, mat_soil
+tbdata, 1, coh_soil, int_fric_soil, 0
+r, real_soil
+!
+!  Target and contact
+!
+r, real_target, , , 1.0, 0.1, 0,
+rmore, , , 1.0E20, 0.0, 1.0, 
+rmore, 0.0, 0, 1.0, , 1.0, 0.5
+rmore, 0, 1.0, 1.0, 0.0, , 1.0
+!
+! Geometry parameters
+!
+! Main box
+!
+ll = 44.4e-2
+ww = 34.5e-2
+hh = 9.5e-2
+platen = 24.2e-2
+!
+! Insert
+!
+ll_in = 37e-2
+ww_in = 15.3e-2
+hh_in = 3.7e-2
+ll_in_bot = 28.2e-2
+ww_in_bot = 5.7e-2
+!
+! Wall thickness
+!
+tt = 1.0e-2
+!
+! Hollow space (top and bottom)
+!
+hh_hol_tb = 7.5e-2
+ww_hol_tb_1 = 7.6e-2
+ww_hol_tb_2 = 4.8e-2
+ww_hol_tb_3 = ww/2 - tt - ww_hol_tb_1 - ww_hol_tb_2
+!
+! Hollow space (left and right)
+!
+ll_hol_lr = ll/2 - tt 
+ll_hol_lr_1 = ll/2 - 3.7e-2
+ll_hol_lr_2 = ll_hol_lr_1 - 4.4e-2
+hh_hol_lr = hh_hol_tb
+!
+! Create the side indentations
+!
+!
+! Far side
+!
+k, 1, -ll_in/2, -ww_in/2, -hh/2
+k, 2, ll_in/2, -ww_in/2, -hh/2
+k, 3, ll_in/2, ww_in/2, -hh/2
+k, 4, -ll_in/2, ww_in/2, -hh/2
+k, 5, -ll_in_bot/2, -ww_in_bot/2, -hh/2+hh_in
+k, 6, ll_in_bot/2, -ww_in_bot/2, -hh/2+hh_in
+k, 7, ll_in_bot/2, ww_in_bot/2, -hh/2+hh_in
+k, 8, -ll_in_bot/2, ww_in_bot/2, -hh/2+hh_in
+a, 1, 2, 6, 5
+a, 2, 3, 7, 6
+a, 3, 4, 8, 7
+a, 4, 1, 5, 8
+ksel, s, kp, , 1
+ksel, a, kp, , 5
+lslk, s, 1
+asll, s, 0
+*get, a1, area, 0, nxth
+*get, a2, area, a1, nxth
+!afillt, a1, a2, 7.0e-3
+ksel, s, kp, , 2
+ksel, a, kp, , 6
+lslk, s, 1
+asll, s, 0
+*get, a1, area, 0, nxth
+*get, a2, area, a1, nxth
+!afillt, a1, a2, 7.0e-3
+ksel, s, kp, , 3
+ksel, a, kp, , 7
+lslk, s, 1
+asll, s, 0
+*get, a1, area, 0, nxth
+*get, a2, area, a1, nxth
+!afillt, a1, a2, 7.0e-3
+ksel, s, kp, , 4
+ksel, a, kp, , 8
+lslk, s, 1
+asll, s, 0
+*get, a1, area, 0, nxth
+*get, a2, area, a1, nxth
+!afillt, a1, a2, 7.0e-3
+lsel, s, loc, z, -hh/2
+al, all
+lsel, s, loc, z, -hh/2+hh_in
+al, all
+allsel
+*get, kmin_far, kp, 0, num, min
+*get, kmax_far, kp, 0, num, max 
+*get, lmin_far, line, 0, num, min
+*get, lmax_far, line, 0, num, max 
+*get, amin_far, area, 0, num, min
+*get, amax_far, area, 0, num, max 
+cm, _farArea, area
+asel, s, area, , amin_far, amax_far
+cm, _farLine, line
+lsla, s
+cm, _farKP, kp
+ksll, s
+va, all  ! volume 1
+cm, _farVol, volu
+vsla, s
+!
+! Near side
+!
+k, 111, -ll_in/2, -ww_in/2, hh/2
+k, 112, ll_in/2, -ww_in/2, hh/2
+k, 113, ll_in/2, ww_in/2, hh/2
+k, 114, -ll_in/2, ww_in/2, hh/2
+k, 115, -ll_in_bot/2, -ww_in_bot/2, hh/2-hh_in
+k, 116, ll_in_bot/2, -ww_in_bot/2, hh/2-hh_in
+k, 117, ll_in_bot/2, ww_in_bot/2, hh/2-hh_in
+k, 118, -ll_in_bot/2, ww_in_bot/2, hh/2-hh_in
+a, 111, 112, 116, 115
+a, 112, 113, 117, 116
+a, 113, 114, 118, 117
+a, 114, 111, 115, 118
+ksel, s, kp, , 111
+ksel, a, kp, , 115
+lslk, s, 1
+asll, s, 0
+*get, a1, area, 0, nxth
+*get, a2, area, a1, nxth
+!afillt, a1, a2, 7.0e-3
+ksel, s, kp, , 112
+ksel, a, kp, , 116
+lslk, s, 1
+asll, s, 0
+*get, a1, area, 0, nxth
+*get, a2, area, a1, nxth
+!afillt, a1, a2, 7.0e-3
+ksel, s, kp, , 113
+ksel, a, kp, , 117
+lslk, s, 1
+asll, s, 0
+*get, a1, area, 0, nxth
+*get, a2, area, a1, nxth
+!afillt, a1, a2, 7.0e-3
+ksel, s, kp, , 114
+ksel, a, kp, , 118
+lslk, s, 1
+asll, s, 0
+*get, a1, area, 0, nxth
+*get, a2, area, a1, nxth
+!afillt, a1, a2, 7.0e-3
+lsel, s, loc, z, hh/2
+al, all
+lsel, s, loc, z, hh/2-hh_in
+al, all
+ksel, s, loc, z, 0, hh/2
+lslk, s, 1
+asll, s, 1
+*get, kmin_near, kp, 0, num, min
+*get, kmax_near, kp, 0, num, max 
+*get, lmin_near, line, 0, num, min
+*get, lmax_near, line, 0, num, max 
+*get, amin_near, area, 0, num, min
+*get, amax_near, area, 0, num, max 
+cm, _nearArea, area
+asel, s, area, , amin_near, amax_near
+cm, _nearLine, line
+lsla, s
+cm, _nearKP, kp
+ksll, s
+va, all  ! volume 2
+cm, _nearVol, volu
+vsla, s
+allsel
+*get, kmax, kp, 0, num, max
+*get, lmax, line, 0, num, max
+*get, amax, area, 0, num, max
+*get, vmax, volu, 0, num, max
+ksel, u, kp, ,1, kmax
+lsel, u, line, ,1, lmax
+asel, u, area, ,1, amax
+vsel, u, volu, ,1, vmax
+!
+! Create the areas for the hollow region (top and bottom)
+!
+k, 220, 0, ww_hol_tb_3, 0
+k, 221, 0, ww_hol_tb_3+ww_hol_tb_2, hh_hol_tb/2
+k, 222, 0, ww_hol_tb_3+ww_hol_tb_2+ww_hol_tb_1, hh_hol_tb/2
+k, 223, 0, ww_hol_tb_3+ww_hol_tb_2+ww_hol_tb_1, -hh_hol_tb/2
+k, 224, 0, ww_hol_tb_3+ww_hol_tb_2, -hh_hol_tb/2
+l, 220, 221
+l, 221, 222
+l, 222, 223
+l, 223, 224
+l, 224, 220
+ksel, s, kp, , 220
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 221
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 222
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 223
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 224
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, loc, x, 0
+ksel, r, loc, y, ww_hol_tb_3,  ww_hol_tb_3+ww_hol_tb_2+ww_hol_tb_1
+lslk, s, 1
+al, all
+*get, atop, area, 0, num, max
+!
+k, 330, 0, -ww_hol_tb_3, 0
+k, 331, 0, -ww_hol_tb_3-ww_hol_tb_2, hh_hol_tb/2
+k, 332, 0, -ww_hol_tb_3-ww_hol_tb_2-ww_hol_tb_1, hh_hol_tb/2
+k, 333, 0, -ww_hol_tb_3-ww_hol_tb_2-ww_hol_tb_1, -hh_hol_tb/2
+k, 334, 0, -ww_hol_tb_3-ww_hol_tb_2, -hh_hol_tb/2
+l, 330, 331
+l, 331, 332
+l, 332, 333
+l, 333, 334
+l, 334, 330
+ksel, s, kp, , 330
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 331
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 332
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 333
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 334
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, loc, x, 0
+ksel, r, loc, y, -ww_hol_tb_3-ww_hol_tb_2-ww_hol_tb_1, -ww_hol_tb_3
+lslk, s, 1
+al, all
+*get, abot, area, 0, num, max
+!
+!  Create the areas for the hollow region (left and right)
+!
+k, 440, ll_hol_lr_2, 0, 0
+k, 441, ll_hol_lr_1, 0, hh_hol_lr/2
+k, 442, ll_hol_lr, 0, hh_hol_lr/2
+k, 443, ll_hol_lr, 0, -hh_hol_lr/2
+k, 444, ll_hol_lr_1, 0, -hh_hol_lr/2
+l, 440, 441
+l, 441, 442
+l, 442, 443
+l, 443, 444
+l, 444, 440
+ksel, s, kp, , 440
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 441
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 442
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 443
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 444
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, loc, y, 0
+ksel, r, loc, x, ll_hol_lr_2,  ll_hol_lr
+lslk, s, 1
+al, all
+*get, aright, area, 0, num, max
+!
+k, 550, -ll_hol_lr_2, 0, 0
+k, 551, -ll_hol_lr_1, 0, hh_hol_lr/2
+k, 552, -ll_hol_lr, 0, hh_hol_lr/2
+k, 553, -ll_hol_lr, 0, -hh_hol_lr/2
+k, 554, -ll_hol_lr_1, 0, -hh_hol_lr/2
+l, 550, 551
+l, 551, 552
+l, 552, 553
+l, 553, 554
+l, 554, 550
+ksel, s, kp, , 550
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 551
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 552
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 553
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 554
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, loc, y, 0
+ksel, r, loc, x, -ll_hol_lr,  -ll_hol_lr_2
+lslk, s, 1
+al, all
+*get, aleft, area, 0, num, max
+!
+! Create the hollow volumes 
+!
+voffst, atop, ll/2-tt  ! volume 3
+voffst, atop, -ll/2+tt  ! volume 4
+voffst, abot, ll/2-tt  ! volume 5
+voffst, abot, -ll/2+tt  ! volume 6
+!
+voffst, aright, ww/2-tt-2.0e-2  ! volume 7
+voffst, aright, -ww/2+tt+2.0e-2  ! volume 8
+voffst, aleft, ww/2-tt-2.0e-2  ! volume 9
+voffst, aleft, -ww/2+tt+2.0e-2  ! volume 10
+!
+! Create the block 
+!
+block, -ll/2, ll/2, -ww/2, ww/2, -hh/2, hh/2  ! volume 11
+allsel
+!
+! Substract the other volumes from the block
+!
+*get, vol_blk, volu, 0, num, max
+cm, _hollow_vol, volu
+vsel, s, volu, ,3,10
+cm, _hollow_vol1, volu
+cmsel, s, _hollow_vol, volu
+vsbv, vol_blk, _hollow_vol1, , delete, delete
+!
+*get, vol_blk, volu, 0, num, max
+cm, _hollow_vol, volu
+vsel, s, volu, ,1,2
+cm, _hollow_vol1, volu
+cmsel, s, _hollow_vol, volu
+vsbv, vol_blk, _hollow_vol1, , delete, delete
+numcmp, volu
+*get, vol_blk, volu, 0, num, max
+!
+! Create a half block for the platen area
+!
+block, 0, platen/2, -ww/2, ww/2, -hh/2, hh/2
+*get, vol_blk_plat, volu, 0, num, max
+!
+! Create a half block for the rest of the heel block
+block, platen/2, ll/2, -ww/2, ww/2, -hh/2, hh/2
+*get, vol_blk_qtr, volu, 0, num, max
+!
+!  Intersect the two volumes
+!
+vinp, vol_blk, vol_blk_plat, vol_blk_qtr
+vadd, all
+numcmp, volu
+*get, vol_id, volu, 0, num, max
+!
+! Create a block for the soil
+!
+block, 0, ll, -ww, ww, -hh/2, -3*hh/2
+*get, vol_soil, volu, 0, num, max
+!
+! mesh the volumes
+!
+vsel, s, volu, , vol_id
+vatt, mat_poly, real_poly, el_poly, 0
+smrtsize, 4, 1, 1, 2, 15, 28, 1.5, 1, 1, 4, 0
+mopt, amesh, defa
+mopt, qmesh, defa
+mopt, vmesh, defa
+mopt, timp, 1
+mopt, pyra, on
+mopt, aord, 0
+mopt, split, 1
+mshkey, 0
+mshmid, 0
+mshpattern, 0
+keyw, accept, 0
+mshape, 0, 2d
+mshape, 1, 3d
+vmesh, vol_id
+!
+vsel, s, volu, , vol_soil
+vatt, mat_soil, real_soil, el_soil, 0
+smrtsize, 4, 1, 1, 2, 15, 28, 1.5, 1, 1, 4, 0
+mopt, amesh, defa
+mopt, qmesh, defa
+mopt, vmesh, defa
+mopt, timp, 1
+mopt, pyra, on
+mopt, aord, 0
+mopt, split, 1
+mshkey, 1
+mshmid, 0
+mshpattern, 0
+keyw, accept, 0
+mshape, 0, 2d
+mshape, 0, 3d
+esize, 1.0e-2, 0,
+vmesh, vol_soil
+allsel
+!
+! Create contact and target elements
+!
+! Generate the target surface   
+vsel, s, volu,, vol_soil
+aslv, s
+asel, r, loc, z, -hh/2
+mat, mat_soil
+type, type_target  
+real, real_target
+nsla, s, 1
+nsel, r, loc, y, -ww/2*1.2, ww/2*1.2
+nsel, r, loc, x, 0, 1.2*ll/2
+esln, s, 0
+esurf
+!esurf, , reve   
+allsel
+! Generate the contact surface  
+vsel, s, volu,, vol_id
+aslv, s
+asel, r, loc, z, -hh/2 
+lsla, s
+asll, s, 0
+asel, u, loc, x, 0.0
+lsla, s
+mat, mat_poly
+type, type_contact  
+real, real_target
+nsla, s, 1
+esln, s, 0
+esurf
+allsel
+!esel, s, type, , type_target  
+!esel, a, type, , type_contact 
+!esel, r, real, , real_target 
+!/PSYMB,ESYS,1   
+!/PNUM,TYPE,1
+!/NUM,1  
+!eplot   
+!allsel
+!eplot  
+cncheck
+!
+! Apply boundary condition
+!
+nsel, s, loc, x, 0
+d, all, ux, 0
+!
+nsel, s, loc, z, -3*hh/2
+d, all, uz, 0
+!
+nsel, s, loc, y, -ww
+d, all, uy, 0
+!
+nsel, s, loc, z, hh/2
+nsel, r, loc, x, 0, platen/2
+d, all, uz, 9.0e-3
+!
+nsel, s, loc, z, hh/2-hh_in
+nsel, r, loc, y, -ww_in_bot/2
+d, all, uy, 0
+!
+allsel
+finish
+!
+! Solve
+!
+/solu
+antype, 0
+nlgeom, 1
+time, 1
+autots, on
+solcon, on
+deltim, 0.001
+solve
+SAVE,'heel_block_on_soil','db','/home/banerjee/Work/ElectricPole/SmartStart/Ansys' 
+finish

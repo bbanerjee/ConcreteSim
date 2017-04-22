@@ -1,0 +1,705 @@
+/prep7 
+!
+! Element Parameters
+!
+mat_conc = 1
+E_conc = 30.0e9
+nu_conc = 0.20
+rho_conc = 2400
+!
+mat_rebar = 2
+E_rebar = 200.0e9
+nu_rebar = 0.33
+rho_rebar = 7850
+vf_rebar = 0.1
+theta_rebar = 90
+phi_rebar = 0
+theta_rebar1 = 90
+phi_rebar1 = 90
+!
+mat_poly = 3
+E_poly = 0.59e9
+nu_poly = 0.46
+rho_poly = 938
+fric_poly = 0.1
+sigy_poly = 1.8e7
+hard_poly = 1.2e6
+!
+found_stiff = 0.5e6
+applied_load = 10.0e3
+el_size = 0.011875
+el_size1 = 0.035
+el_num = 8
+!
+type_conc = 1
+real_conc = 1
+type_plane = 2
+real_plane = 2
+type_surf = 3
+real_surf = 3
+type_poly = 4
+real_poly = 4
+type_target = 5
+real_target = 5
+type_contact = 6
+real_contact = 6
+!
+! Geometry parameters
+!
+pole_bot_wid = 0.15/2
+pole_top_wid = 0.16/2
+pole_thick = 0.15
+pole_gl = 2.1
+pole_gl_len = 1.9
+pole_gl_wid = 0.475/2
+pole_len = 12.5
+pole_xmin = 0
+pole_x_bot = pole_bot_wid
+pole_x_mid = pole_gl_wid
+pole_x_top = pole_top_wid
+pole_ymin = -pole_gl
+pole_y_mid_a = -(pole_gl-pole_gl_len)
+pole_y_mid_b = 0
+pole_y_top = pole_len-pole_gl
+pole_zmin = 0
+pole_zmax = pole_thick
+!
+! Breast and heel blocks
+!
+breast_wid = 0.35
+breast_len = 0.90/2
+breast_thick = 0.095
+breast_xmin = 0
+breast_xmax = breast_len
+breast_ymax = -(pole_gl - pole_gl_len)
+breast_ymin = breast_ymax - breast_wid
+!breast_ymin = -(pole_gl - pole_gl_len)
+!breast_ymax = breast_ymin + breast_wid
+breast_zmin = pole_thick
+breast_zmax = breast_zmin + breast_thick
+
+heel_wid = 0.35
+heel_len = 0.45/2
+heel_thick = 0.095
+heel_xmin = 0
+heel_xmax = heel_len
+heel_ymin = -(pole_gl - 0.1)
+heel_ymax = heel_ymin + heel_wid
+heel_zmin = -heel_thick
+heel_zmax = 0
+
+alpha = 0.09
+beta = 0.12
+gamma = (breast_thick-0.025)/2
+twall_x = 0.015
+twall_y = 0.01
+twall_z = 0.015
+!
+! Element type
+!
+et, type_conc, solid65   ! Concrete slab
+et, type_plane, plane42   ! Needed for sweeping
+et, type_surf, surf154   ! foundation element
+et, type_poly, solid45   ! Polyethylene blocks
+et, type_target, targe170  ! Surface-to-surface target element
+et, type_contact, conta173  ! Surface-to-surface contact element
+!
+! Materials
+!
+! Concrete pole
+mat, mat_conc
+mp, ex, mat_conc, E_conc
+mp, nuxy, mat_conc, nu_conc
+mp, dens, mat_conc, rho_conc
+!
+! Steel rebar
+!
+mat, mat_rebar
+mp, ex, mat_rebar, E_rebar
+mp, nuxy, mat_rebar, nu_rebar
+mp, dens, mat_rebar, rho_rebar
+!
+! Polyethylene blocks
+!
+mat, mat_poly
+mp, ex, mat_poly, E_poly
+mp, nuxy, mat_poly, nu_poly
+mp, dens, mat_poly, rho_poly
+mp, mu, mat_poly, fric_poly     ! Coeff of friction
+mp, emis, mat_poly, 7.88860905221e-031 ! Emissisvity ?
+tb, bkin, mat_poly
+tbdata, 1, sigy_poly, hard_poly
+!
+! Real constants reinforced concrete (1% rebar)
+!
+type, type_conc
+r, real_conc, mat_rebar, vf_rebar, theta_rebar, phi_rebar, mat_rebar, vf_rebar, theta_rebar1, phi_rebar1
+r, real_plane
+!
+!  Keyopt and real constant for foundation
+!
+type, type_surf
+keyopt, type_surf, 4, 1  ! 4 noded element
+keyopt, type_surf, 7, 0  ! Update area for large deflections
+r, real_surf, , , , found_stiff, , ! Foundation stiffness (Pa)
+!
+! Real constants for poly blocks
+!
+r, real_poly
+!
+! Keyopt and real constants for contact elements
+!
+type, type_contact
+KEYOPT, type_contact,4,0
+KEYOPT, type_contact,5,0
+KEYOPT, type_contact,7,0
+KEYOPT, type_contact,8,0
+KEYOPT, type_contact,9,0
+KEYOPT, type_contact,10,2   
+KEYOPT, type_contact,11,0   
+KEYOPT, type_contact,12,0   
+KEYOPT, type_contact,2,0
+type, type_target
+KEYOPT, type_target,5,0
+MAT,mat_poly   
+R, real_target 
+REAL, real_target  
+R, real_target,,,1.0,0.1,0,
+RMORE,,,1.0E20,0.0,1.0, 
+RMORE,0.0,0,1.0,,1.0,0.5
+RMORE,0,1.0,1.0,0.0,,1.0
+!
+! Create geometry
+!
+k,1, pole_xmin,  pole_ymin, 0.0   
+k,2, pole_x_bot, pole_ymin, 0.0
+k,3, pole_x_mid, pole_y_mid_a, 0.0
+k,4, pole_x_mid, pole_y_mid_b, 0.0
+k,5, pole_x_top, pole_y_top, 0.0  
+k,6, pole_xmin,  pole_y_top, 0.0
+k,7, pole_xmin,  pole_y_mid_b, 0.0
+k,8, pole_xmin,  pole_y_mid_a, 0.0  
+l,1,2   
+l,2,3   
+l,3,4 
+l,4,7
+l,7,8
+l,8,1  
+l,4,5   
+l,5,6 
+l,6,7    
+al,1,2,3,4,5,6 
+al,7,8,9,4  
+!
+! Add polythylene heel block far left surface
+!
+k, 9,  heel_xmin, heel_ymin, heel_zmin
+k, 10, heel_xmax, heel_ymin, heel_zmin
+k, 11, heel_xmax, heel_ymax, heel_zmin
+k, 12, heel_xmin, heel_ymax, heel_zmin
+l, 9, 10
+l, 10, 11
+l, 11, 12
+l, 12, 9
+al, 10, 11, 12, 13
+!
+! Add polyethylene breast block far right surface
+!
+k, 13, breast_xmin, breast_ymin, breast_zmax
+k, 14, breast_xmax, breast_ymin, breast_zmax
+k, 15, breast_xmax, breast_ymax, breast_zmax
+k, 16, breast_xmin, breast_ymax, breast_zmax
+l, 13, 14
+l, 14, 15
+l, 15, 16
+l, 16, 13
+al, 14, 15, 16, 17
+!
+! Mesh the areas
+!
+!
+! Base area
+!
+esize, el_size1
+asel, s, area,,1
+aatt, mat_conc, real_plane, type_plane, 0
+mshkey, 0
+amesh, 1
+allsel
+!
+! Area above ground
+asel, s, area,,2
+aatt, mat_conc, real_plane, type_plane, 0
+mshkey, 1
+amesh,2
+allsel
+!
+! Clean up
+!
+nummrg, kp
+nummrg, node
+!
+! Sweep concrete pole
+!
+type, type_conc
+real, real_conc
+mat, mat_conc
+esize, 0, el_num
+voffst,1, pole_thick, , 
+voffst,2, pole_thick,,
+aclear, 1         ! remove the surf154 elements used for sweeping
+aclear, 2          ! remove the plane42 elements used for sweeping
+!
+! Clean up
+!
+nummrg,kp
+nummrg,node
+nummrg, kp
+nummrg, node
+!
+! Heel block
+!
+esize, el_size
+asel, s, area,, 3
+aatt, mat_poly, real_surf, type_surf, 0
+mshkey, 1
+amesh,3
+allsel
+!
+! Breast block
+!
+esize, el_size
+asel, s, area,, 4
+aatt, mat_poly, real_surf, type_surf, 0
+mshkey, 1
+amesh, 4
+allsel
+!
+! Sweep poly heel block
+!
+type, type_poly
+real, real_poly
+mat, mat_poly
+esize, 0, el_num
+!esize, el_size
+voffst, 3, heel_thick,,
+allsel
+!
+! Sweep the breast block
+!
+type, type_poly
+real, real_poly
+mat, mat_poly
+!esize, el_size
+esize, 0, el_num
+voffst, 4, -breast_thick,,
+allsel
+!
+! Add foundation elements to constrain heel block top and sides
+!
+real, real_surf
+type, type_surf
+vsel, s, volu, , 3
+aslv, s
+asel, r, loc, x, heel_xmax
+nsla, s, all
+esln, s, 0
+esurf
+allsel
+vsel, s, volu, , 3
+aslv, s
+asel, r, loc, y, heel_ymin
+nsla, s, all
+esln, s, 0
+esurf
+allsel
+vsel, s, volu, , 3
+aslv, s
+asel, r, loc, y, heel_ymax
+NSLA,S,all
+ESLN,S,0
+ESURF
+allsel
+!
+! Add foundation elements to constrain breast block top and sides
+!
+real, real_surf
+type, type_surf
+vsel, s, volu,, 4
+aslv, s
+asel, r, loc, x, breast_xmax
+nsla, s, all
+esln, s, 0
+esurf
+allsel
+vsel, s, volu,, 4
+aslv, s
+asel, r, loc, y, breast_ymin
+nsla, s, all
+esln, s, 0
+esurf
+allsel
+vsel, s, volu,, 4
+aslv, s
+asel, r, loc, y, breast_ymax
+nsla, s, all
+esln, s, 0
+esurf
+allsel
+!
+! Add foundation elements to constrain the pole base
+!
+real, real_surf
+type, type_surf
+vsel, s, volu, , 1
+aslv, s
+asel, r, loc, y, pole_ymin
+NSLA,S,all
+ESLN,S,0 
+ESURF
+allsel
+
+!
+! Create contact pair between pole and heel block
+!
+allsel
+/COM, CONTACT PAIR CREATION - START 
+CM,_NODECM,NODE 
+CM,_ELEMCM,ELEM 
+CM,_KPCM,KP 
+CM,_LINECM,LINE 
+CM,_AREACM,AREA 
+CM,_VOLUCM,VOLU 
+/GSAV,cwz,gsav,,temp
+! Generate the target surface   
+vsel, s, volu,, 3
+aslv, s
+asel, r, loc, z, 0.0 
+CM,_TARGET,AREA 
+mat, mat_poly
+TYPE, type_target  
+real, real_target
+NSLA,S,1
+ESLN,S,0
+ESLL,U  
+ESEL,U,ENAME,,188,189   
+ESURF   
+CMSEL,S,_ELEMCM 
+! Generate the contact surface  
+allsel
+vsel, s, volu,, 1
+aslv, s
+asel, r, loc, z, 0 
+CM,_CONTACT,AREA
+mat, mat_conc
+TYPE, type_contact  
+NSLA,S,1
+ESLN,S,0
+ESURF   
+ALLSEL  
+ESEL,ALL
+ESEL,S,TYPE,, type_target  
+ESEL,A,TYPE,, type_contact 
+ESEL,R,REAL,, real_poly 
+/PSYMB,ESYS,1   
+/PNUM,TYPE,1
+/NUM,1  
+EPLOT   
+ESEL,ALL
+ESEL,S,TYPE,, type_target 
+ESEL,A,TYPE,, type_contact  
+ESEL,R,REAL,, real_poly  
+CMSEL,A,_NODECM 
+CMDEL,_NODECM   
+CMSEL,A,_ELEMCM 
+CMDEL,_ELEMCM   
+CMSEL,S,_KPCM   
+CMDEL,_KPCM 
+CMSEL,S,_LINECM 
+CMDEL,_LINECM   
+CMSEL,S,_AREACM 
+CMDEL,_AREACM   
+CMSEL,S,_VOLUCM 
+CMDEL,_VOLUCM   
+/GRES,cwz,gsav  
+CMDEL,_TARGET   
+CMDEL,_CONTACT  
+/COM, CONTACT PAIR CREATION - END  
+allsel  
+eplot  
+cncheck
+!
+! Create contact elements between pole and breast block
+!
+allsel
+/COM, CONTACT PAIR CREATION - START 
+CM,_NODECM,NODE 
+CM,_ELEMCM,ELEM 
+CM,_KPCM,KP 
+CM,_LINECM,LINE 
+CM,_AREACM,AREA 
+CM,_VOLUCM,VOLU 
+/GSAV,cwz,gsav,,temp
+! Generate the target surface   
+vsel, s, volu,, 4
+aslv, s
+asel, r, loc, z, breast_zmin 
+CM,_TARGET,AREA 
+mat, mat_poly
+TYPE, type_target  
+real, real_target
+NSLA,S,1
+ESLN,S,0
+ESLL,U  
+ESEL,U,ENAME,,188,189   
+ESURF   
+CMSEL,S,_ELEMCM 
+! Generate the contact surface  
+allsel
+vsel, s, volu,, 1
+aslv, s
+asel, r, loc, z, breast_zmin 
+CM,_CONTACT,AREA
+mat, mat_conc
+TYPE, type_contact  
+NSLA,S,1
+ESLN,S,0
+ESURF   
+ALLSEL  
+ESEL,ALL
+ESEL,S,TYPE,,type_target  
+ESEL,A,TYPE,,type_contact
+ESEL,R,REAL,,real_poly  
+/PSYMB,ESYS,1   
+/PNUM,TYPE,1
+/NUM,1  
+EPLOT   
+ESEL,ALL
+ESEL,S,TYPE,, type_target  
+ESEL,A,TYPE,, type_contact  
+ESEL,R,REAL,, real_poly  
+CMSEL,A,_NODECM 
+CMDEL,_NODECM   
+CMSEL,A,_ELEMCM 
+CMDEL,_ELEMCM   
+CMSEL,S,_KPCM   
+CMDEL,_KPCM 
+CMSEL,S,_LINECM 
+CMDEL,_LINECM   
+CMSEL,S,_AREACM 
+CMDEL,_AREACM   
+CMSEL,S,_VOLUCM 
+CMDEL,_VOLUCM   
+/GRES,cwz,gsav  
+CMDEL,_TARGET   
+CMDEL,_CONTACT  
+/COM, CONTACT PAIR CREATION - END  
+allsel  
+eplot  
+cncheck
+
+!
+! Apply displacements
+!
+! Symmetry along x = 0
+!
+nsel, s, loc, x, 0.0
+d, all, ux, 0
+!
+! Fix far face of heel block
+!
+esel, s, type, , type_surf
+nsle, s, all
+nsel, r, loc, y, heel_ymin, heel_ymax  
+nsel, r, loc, z, heel_zmin
+d, all, uz, 0
+allsel
+!
+! Fix top and bottom face of heel block
+!
+esel, s, type, , type_surf
+nsle, s, all
+nsel, r, loc, y, heel_ymax
+d, all, uy, 0
+esel, s, type, , type_surf
+nsle, s, all
+nsel, r, loc, y, heel_ymin
+d, all, uy, 0
+allsel
+!
+! Fix right face of heel block
+!
+esel, s, type, , type_surf
+nsle, s, all
+nsel, r, loc, x, heel_xmax
+d, all, ux, 0
+allsel
+!
+! Fix far face of breast block
+!
+esel, s, type, , type_surf
+nsle, s, all
+nsel, r, loc, y, breast_ymin, breast_ymax  
+nsel, r, loc, z, breast_zmax
+d, all, uz, 0
+allsel
+!
+! Fix top and bottom face of breast block
+!
+esel, s, type, , type_surf
+nsle, s, all
+nsel, r, loc, y, breast_ymax
+nsel, r, loc, z, breast_zmin, breast_zmax
+d, all, uy, 0
+esel, s, type, , type_surf
+nsle, s, all
+nsel, r, loc, y, breast_ymin
+nsel, r, loc, z, breast_zmin, breast_zmax
+d, all, uy, 0
+allsel
+!
+! Fix right face of breast block
+!
+esel, s, type, , type_surf
+nsle, s, all
+nsel, r, loc, x, breast_xmax
+nsel, r, loc, z, breast_zmin, breast_zmax
+d, all, ux, 0
+allsel
+!
+! Fix bottom of pole
+!
+!esel, s, type, , type_surf
+!nsle, s, all
+nsel, s, loc, y, pole_ymin
+nsel, r, loc, z, pole_zmax
+d, all, uy, 0 
+d, all, uz, 0
+allsel
+!
+! Fix center of pole
+!
+!esel, s, type, , type_surf
+!nsle, s, all
+!nsel, r, loc, y, pole_ymin
+!nsel, r, loc, z, pole_zmax
+!nsel, r, loc, x, pole_xmin
+!d, all, uz, 0
+!allsel
+!
+! Apply loads
+!
+acel, 0, 9.8, 0 
+nsel,s,loc,y, pole_y_top
+nsel,r,loc,z, pole_zmax  
+*get, numNodes, node, 0, count
+f, all, fz, applied_load/numNodes  
+allsel 
+!
+! Unselect elements
+!
+! Heel block outside
+!
+nsel, s, loc, x, heel_xmin, heel_xmax-alpha
+nsel, r, loc, y, heel_ymin+beta, heel_ymax-beta
+nsel, r, loc, z, heel_zmin, heel_zmin+gamma
+esln, u, 1, all
+!edele, all
+!allsel
+!
+nsel, s, loc, x, heel_xmin, heel_xmax-alpha
+nsel, r, loc, y, heel_ymin+beta, heel_ymax-beta
+nsel, r, loc, z, heel_zmax-gamma, heel_zmax
+esln, u, 1, all
+!edele, all
+!allsel
+!
+! Heel block inside top and bottom and side
+!
+nsel, s, loc, x, heel_xmin, heel_xmax-twall_x
+nsel, r, loc, z, heel_zmin+twall_z, heel_zmax-twall_z
+nsel, r, loc, y, heel_ymin+twall_y, heel_ymin+beta-twall_y
+esln, u, 1, all
+!edele, all
+!allsel
+!
+nsel, s, loc, x, heel_xmin, heel_xmax-twall_x
+nsel, r, loc, z, heel_zmin+twall_z, heel_zmax-twall_z
+nsel, r, loc, y, heel_ymax-beta+twall_y, heel_ymax-twall_y
+esln, u, 1, all
+!edele, all
+!allsel
+!
+nsel, s, loc, x, heel_xmax-alpha+2*twall_x, heel_xmax-twall_x
+nsel, r, loc, y, heel_ymin+twall_y, heel_ymax-twall_y
+nsel, r, loc, z, heel_zmin+twall_z, heel_zmax-twall_z
+esln, u, 1, all
+!edele, all
+!allsel
+!
+! Breast block outside
+!
+nsel, s, loc, x, breast_xmin+alpha, breast_xmax-alpha
+nsel, r, loc, y, breast_ymin+beta, breast_ymax-beta
+nsel, r, loc, z, breast_zmin, breast_zmin+gamma
+esln, u, 1, all
+!edele, all
+!allsel
+!
+nsel, s, loc, x, breast_xmin+alpha, breast_xmax-alpha
+nsel, r, loc, y, breast_ymin+beta, breast_ymax-beta
+nsel, r, loc, z, breast_zmax-gamma, breast_zmax
+esln, u, 1, all
+!edele, all
+!allsel
+!
+! Breast block inside top and bottom and sides
+!
+nsel, s, loc, x, breast_xmin, breast_xmax-twall_x
+nsel, r, loc, z, breast_zmin+twall_z, breast_zmax-twall_z
+nsel, r, loc, y, breast_ymin+twall_y, breast_ymin+beta-twall_y
+esln, u, 1, all
+!edele, all
+!allsel
+!
+nsel, s, loc, x, breast_xmin, breast_xmax-twall_x
+nsel, r, loc, z, breast_zmin+twall_z, breast_zmax-twall_z
+nsel, r, loc, y, breast_ymax-beta+twall_y, breast_ymax-twall_y
+esln, u, 1, all
+!edele, all
+!allsel
+!
+nsel, s, loc, x, breast_xmax-alpha+2*twall_x, breast_xmax-twall_x
+nsel, r, loc, y, breast_ymin+twall_y, breast_ymax-twall_y
+nsel, r, loc, z, breast_zmin+twall_z, breast_zmax-twall_z
+esln, u, 1, all
+!edele, all
+!allsel
+!
+nsel, s, loc, x, breast_xmin, breast_xmin+alpha-2*twall_x
+nsel, r, loc, y, breast_ymin+twall_y, breast_ymax-twall_y
+nsel, r, loc, z, breast_zmin+twall_z, breast_zmax-twall_z
+esln, u, 1, all
+!edele, all
+!allsel
+nsle,s,all
+SAVE,'electric_pole_125m','db','/home/banerjee/Work/ElectricPole/SmartStart/Ansys' 
+finish
+!
+! Solve
+!
+!/solu
+!
+! Solve options
+!
+!antype, 0
+!nlgeom, 1
+!time, 0
+!autots, on
+!solcon, on
+!deltim, 0.01
+!nsubst, 100
+!solve
+!SAVE,'electric_pole_125m_case1','db','D:\Banerjee\' 
+!finish
+

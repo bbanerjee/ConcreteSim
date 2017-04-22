@@ -1,0 +1,113 @@
+/prep7 
+!
+! Element type
+!
+et, 1, solid95
+!
+! Materials
+!
+! Concrete pole ?
+mp, ex, 1, 30.0e9
+mp, prxy, 1, 0.20
+mp, dens, 1, 2400
+!
+! Polyethylene blocks
+!
+mp, ex, 2, 0.59e9
+mp, nuxy, 2, 0.46
+mp, dens, 2, 938
+tb, bkin, 2
+tbdata, 1, 18.0e6, 1.2e6
+!
+! Soil
+!
+mp, ex, 3, 2.0e6
+mp, nuxy, 3, 0.40
+mp, dens, 3, 1700
+tb, dp, 3
+tbdata, 1, 20.0e3, 20, 0
+!
+! Create geometry
+!
+k,1,-0.2,-1.6   
+k,2,0.2,-1.6
+k,3,0.3,-0.6
+k,4,0.25,5  
+k,5,-0.25,5 
+k,6,-0.3,-0.6   
+l,1,2   
+l,2,3   
+l,3,4   
+l,4,5   
+l,5,6   
+l,6,1   
+al,1,2,3,4,5,6   
+voffst,1,0.15, , 
+block, -0.4, 0.4, -1.4, -1.1, -0.1, 0   
+block, -0.5, 0.5, -0.4, -0.1, 0.15, 0.25
+block, -3, 3, -3.6, 0, -3, 3
+!kwplan,-1,1,2,7
+!cylind, 0, 3, -1.6, 2, ,
+!csys,0
+!wpcsys,-1,0
+vsbv, 4, all, , delete, keep
+!
+! Set volume attributes
+! 
+vsel, s, volu,,1,1
+vatt, 1
+vsel, s, volu,,2,3
+vatt, 2
+vsel, s, volu,,5
+vatt, 3
+allsel
+!
+! Mesh everything
+!
+mshape,1,3D 
+mshkey,0
+smrt,6
+vmesh, all
+!
+! Apply boundary conditions
+!
+nsel, s, loc, y, -3.6, -3.6
+d, all, uy, 0
+allsel
+nsel, s, loc, x, 3, 3
+d, all, ux, 0
+nsel, s, loc, x, -3, -3
+d, all, ux, 0
+nsel, s, loc, z, 3, 3
+d, all, uz, 0
+nsel, s, loc, z, -3, -3
+d, all, uz, 0
+!kwplan,-1,1,2,7
+!cswpla,11,1,1,1,
+!csys,11,
+!nsel, s, loc, x, 3, 3
+!d, all, ux, 0
+!csys, 0
+!wpcsys,-1,0
+allsel
+nsel,s,loc,y,5,5
+nsel,r,loc,z,0.15,0.15 
+f, all, fz, 10.0e3
+allsel
+!
+! Apply gravity load
+!
+acel, 0, -9.8, 0
+finish
+!
+! Solve
+!
+!/solu
+!antype, 0
+!nlgeom, 1
+!autots, 1
+!nsubst, 100
+!solcon, on
+!solve
+!finish
+

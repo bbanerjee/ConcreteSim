@@ -1,0 +1,376 @@
+/prep7
+!
+! Geometry parameters
+!
+! Main box
+!
+ll = 44.4e-2
+ww = 34.5e-2
+hh = 9.5e-2
+!
+! Insert
+!
+ll_in = 37e-2
+ww_in = 15.3e-2
+hh_in = 3.7e-2
+ll_in_bot = 28.2e-2
+ww_in_bot = 5.7e-2
+!
+! Wall thickness
+!
+tt = 1.0e-2
+!
+! Hollow space (top and bottom)
+!
+hh_hol_tb = 7.5e-2
+ww_hol_tb_1 = 7.6e-2
+ww_hol_tb_2 = 4.8e-2
+ww_hol_tb_3 = ww/2 - tt - ww_hol_tb_1 - ww_hol_tb_2
+!
+! Hollow space (left and right)
+!
+ll_hol_lr = ll/2 - tt -0.1e-2
+ll_hol_lr_1 = ll/2 - 3.7e-2
+ll_hol_lr_2 = ll_hol_lr_1 - 4.4e-2
+hh_hol_lr = 7.5e-2
+!
+! Create the side indentations
+!
+!
+! Far side
+!
+k, 1, -ll_in/2, -ww_in/2, -hh/2
+k, 2, ll_in/2, -ww_in/2, -hh/2
+k, 3, ll_in/2, ww_in/2, -hh/2
+k, 4, -ll_in/2, ww_in/2, -hh/2
+k, 5, -ll_in_bot/2, -ww_in_bot/2, -hh/2+hh_in
+k, 6, ll_in_bot/2, -ww_in_bot/2, -hh/2+hh_in
+k, 7, ll_in_bot/2, ww_in_bot/2, -hh/2+hh_in
+k, 8, -ll_in_bot/2, ww_in_bot/2, -hh/2+hh_in
+a, 1, 2, 6, 5
+a, 2, 3, 7, 6
+a, 3, 4, 8, 7
+a, 4, 1, 5, 8
+ksel, s, kp, , 1
+ksel, a, kp, , 5
+lslk, s, 1
+asll, s, 0
+*get, a1, area, 0, nxth
+*get, a2, area, a1, nxth
+!afillt, a1, a2, 7.0e-3
+ksel, s, kp, , 2
+ksel, a, kp, , 6
+lslk, s, 1
+asll, s, 0
+*get, a1, area, 0, nxth
+*get, a2, area, a1, nxth
+!afillt, a1, a2, 7.0e-3
+ksel, s, kp, , 3
+ksel, a, kp, , 7
+lslk, s, 1
+asll, s, 0
+*get, a1, area, 0, nxth
+*get, a2, area, a1, nxth
+!afillt, a1, a2, 7.0e-3
+ksel, s, kp, , 4
+ksel, a, kp, , 8
+lslk, s, 1
+asll, s, 0
+*get, a1, area, 0, nxth
+*get, a2, area, a1, nxth
+!afillt, a1, a2, 7.0e-3
+lsel, s, loc, z, -hh/2
+al, all
+lsel, s, loc, z, -hh/2+hh_in
+al, all
+allsel
+*get, kmin_far, kp, 0, num, min
+*get, kmax_far, kp, 0, num, max 
+*get, lmin_far, line, 0, num, min
+*get, lmax_far, line, 0, num, max 
+*get, amin_far, area, 0, num, min
+*get, amax_far, area, 0, num, max 
+cm, _farArea, area
+asel, s, area, , amin_far, amax_far
+cm, _farLine, line
+lsla, s
+cm, _farKP, kp
+ksll, s
+va, all  ! volume 1
+cm, _farVol, volu
+vsla, s
+!
+! Near side
+!
+k, 111, -ll_in/2, -ww_in/2, hh/2
+k, 112, ll_in/2, -ww_in/2, hh/2
+k, 113, ll_in/2, ww_in/2, hh/2
+k, 114, -ll_in/2, ww_in/2, hh/2
+k, 115, -ll_in_bot/2, -ww_in_bot/2, hh/2-hh_in
+k, 116, ll_in_bot/2, -ww_in_bot/2, hh/2-hh_in
+k, 117, ll_in_bot/2, ww_in_bot/2, hh/2-hh_in
+k, 118, -ll_in_bot/2, ww_in_bot/2, hh/2-hh_in
+a, 111, 112, 116, 115
+a, 112, 113, 117, 116
+a, 113, 114, 118, 117
+a, 114, 111, 115, 118
+ksel, s, kp, , 111
+ksel, a, kp, , 115
+lslk, s, 1
+asll, s, 0
+*get, a1, area, 0, nxth
+*get, a2, area, a1, nxth
+!afillt, a1, a2, 7.0e-3
+ksel, s, kp, , 112
+ksel, a, kp, , 116
+lslk, s, 1
+asll, s, 0
+*get, a1, area, 0, nxth
+*get, a2, area, a1, nxth
+!afillt, a1, a2, 7.0e-3
+ksel, s, kp, , 113
+ksel, a, kp, , 117
+lslk, s, 1
+asll, s, 0
+*get, a1, area, 0, nxth
+*get, a2, area, a1, nxth
+!afillt, a1, a2, 7.0e-3
+ksel, s, kp, , 114
+ksel, a, kp, , 118
+lslk, s, 1
+asll, s, 0
+*get, a1, area, 0, nxth
+*get, a2, area, a1, nxth
+!afillt, a1, a2, 7.0e-3
+lsel, s, loc, z, hh/2
+al, all
+lsel, s, loc, z, hh/2-hh_in
+al, all
+ksel, s, loc, z, 0, hh/2
+lslk, s, 1
+asll, s, 1
+*get, kmin_near, kp, 0, num, min
+*get, kmax_near, kp, 0, num, max 
+*get, lmin_near, line, 0, num, min
+*get, lmax_near, line, 0, num, max 
+*get, amin_near, area, 0, num, min
+*get, amax_near, area, 0, num, max 
+cm, _nearArea, area
+asel, s, area, , amin_near, amax_near
+cm, _nearLine, line
+lsla, s
+cm, _nearKP, kp
+ksll, s
+va, all  ! volume 2
+cm, _nearVol, volu
+vsla, s
+allsel
+*get, kmax, kp, 0, num, max
+*get, lmax, line, 0, num, max
+*get, amax, area, 0, num, max
+*get, vmax, volu, 0, num, max
+ksel, u, kp, ,1, kmax
+lsel, u, line, ,1, lmax
+asel, u, area, ,1, amax
+vsel, u, volu, ,1, vmax
+!
+! Create the areas for the hollow region (top and bottom)
+!
+k, 220, 0, ww_hol_tb_3, 0
+k, 221, 0, ww_hol_tb_3+ww_hol_tb_2, hh_hol_tb/2
+k, 222, 0, ww_hol_tb_3+ww_hol_tb_2+ww_hol_tb_1, hh_hol_tb/2
+k, 223, 0, ww_hol_tb_3+ww_hol_tb_2+ww_hol_tb_1, -hh_hol_tb/2
+k, 224, 0, ww_hol_tb_3+ww_hol_tb_2, -hh_hol_tb/2
+l, 220, 221
+l, 221, 222
+l, 222, 223
+l, 223, 224
+l, 224, 220
+ksel, s, kp, , 220
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 221
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 222
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 223
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 224
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, loc, x, 0
+ksel, r, loc, y, ww_hol_tb_3,  ww_hol_tb_3+ww_hol_tb_2+ww_hol_tb_1
+lslk, s, 1
+al, all
+*get, atop, area, 0, num, max
+!
+k, 330, 0, -ww_hol_tb_3, 0
+k, 331, 0, -ww_hol_tb_3-ww_hol_tb_2, hh_hol_tb/2
+k, 332, 0, -ww_hol_tb_3-ww_hol_tb_2-ww_hol_tb_1, hh_hol_tb/2
+k, 333, 0, -ww_hol_tb_3-ww_hol_tb_2-ww_hol_tb_1, -hh_hol_tb/2
+k, 334, 0, -ww_hol_tb_3-ww_hol_tb_2, -hh_hol_tb/2
+l, 330, 331
+l, 331, 332
+l, 332, 333
+l, 333, 334
+l, 334, 330
+ksel, s, kp, , 330
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 331
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 332
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 333
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 334
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, loc, x, 0
+ksel, r, loc, y, -ww_hol_tb_3-ww_hol_tb_2-ww_hol_tb_1, -ww_hol_tb_3
+lslk, s, 1
+al, all
+*get, abot, area, 0, num, max
+!
+!  Create the areas for the hollow region (left and right)
+!
+k, 440, ll_hol_lr_2, 0, 0
+k, 441, ll_hol_lr_1, 0, hh_hol_lr/2
+k, 442, ll_hol_lr, 0, hh_hol_lr/2
+k, 443, ll_hol_lr, 0, -hh_hol_lr/2
+k, 444, ll_hol_lr_1, 0, -hh_hol_lr/2
+l, 440, 441
+l, 441, 442
+l, 442, 443
+l, 443, 444
+l, 444, 440
+ksel, s, kp, , 440
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 441
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 442
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 443
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 444
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, loc, y, 0
+ksel, r, loc, x, ll_hol_lr_2,  ll_hol_lr
+lslk, s, 1
+al, all
+*get, aright, area, 0, num, max
+!
+k, 550, -ll_hol_lr_2, 0, 0
+k, 551, -ll_hol_lr_1, 0, hh_hol_lr/2
+k, 552, -ll_hol_lr, 0, hh_hol_lr/2
+k, 553, -ll_hol_lr, 0, -hh_hol_lr/2
+k, 554, -ll_hol_lr_1, 0, -hh_hol_lr/2
+l, 550, 551
+l, 551, 552
+l, 552, 553
+l, 553, 554
+l, 554, 550
+ksel, s, kp, , 550
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 551
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 552
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 553
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, kp, , 554
+lslk, s, 0
+*get, l1, line, 0, nxth
+*get, l2, line, l1, nxth
+lfillt, l1, l2, 5.0e-3
+ksel, s, loc, y, 0
+ksel, r, loc, x, -ll_hol_lr,  -ll_hol_lr_2
+lslk, s, 1
+al, all
+*get, aleft, area, 0, num, max
+!
+! Create the hollow volumes 
+!
+voffst, atop, ll/2-tt  ! volume 3
+voffst, atop, -ll/2+tt  ! volume 4
+voffst, abot, ll/2-tt  ! volume 5
+voffst, abot, -ll/2+tt  ! volume 6
+!
+voffst, aright, ww/2-tt-2.0e-2  ! volume 7
+voffst, aright, -ww/2+tt+2.0e-2  ! volume 8
+voffst, aleft, ww/2-tt-2.0e-2  ! volume 9
+voffst, aleft, -ww/2+tt+2.0e-2  ! volume 10
+!
+! Create the block 
+!
+block, -ll/2, ll/2, -ww/2, ww/2, -hh/2, hh/2  ! volume 11
+allsel
+!
+! Substract the other volumes from the block
+!
+*get, vol_blk, volu, 0, num, max
+cm, _hollow_vol, volu
+vsel, s, volu, ,3,10
+cm, _hollow_vol1, volu
+cmsel, s, _hollow_vol, volu
+vsbv, vol_blk, _hollow_vol1, , delete, delete
+!
+*get, vol_blk, volu, 0, num, max
+cm, _hollow_vol, volu
+vsel, s, volu, ,1,2
+cm, _hollow_vol1, volu
+cmsel, s, _hollow_vol, volu
+vsbv, vol_blk, _hollow_vol1, , delete, delete
